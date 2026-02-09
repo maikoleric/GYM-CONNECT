@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seznam uporabnikov – GYM-CONNECT</title>
+
+  <style>
+    :root{
+      --bg1:#f2f8ff; --bg2:#eefbf8; --bg3:#e9f6ff;
+      --ink:#1e2a32; --muted:rgba(30,42,50,.68);
+      --glass:rgba(255,255,255,.30);
+      --glass2:rgba(255,255,255,.18);
+      --stroke:rgba(255,255,255,.45);
+      --accent1:#4fd1c5; --accent2:#63b3ed; --accent3:#81e6d9;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      background:
+        radial-gradient(900px 600px at 15% 15%, rgba(99,179,237,.55), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(79,209,197,.55), transparent 60%),
+        radial-gradient(900px 700px at 50% 85%, rgba(129,230,217,.55), transparent 65%),
+        linear-gradient(180deg, #f2f8ff, #eefbf8 55%, #e6f7ff);
+    }
+
+    .blob{ position:absolute; filter:blur(40px); opacity:.55; pointer-events:none; transform:translateZ(0); }
+    .blob.b1{ width:420px;height:420px; left:-120px;top:-120px;
+      background:radial-gradient(circle at 30% 30%,var(--accent3),transparent 60%);
+      animation:drift 14s ease-in-out infinite;}
+    .blob.b2{ width:520px;height:520px; right:-180px;top:-140px;
+      background:radial-gradient(circle at 40% 40%,var(--accent2),transparent 62%);
+      animation:drift 18s ease-in-out infinite reverse;}
+    .blob.b3{ width:560px;height:560px; left:15%;bottom:-240px;
+      background:radial-gradient(circle at 40% 40%,var(--accent1),transparent 62%);
+      animation:drift 20s ease-in-out infinite;}
+    @keyframes drift{
+      0%,100%{ transform:translate(0,0) scale(1); }
+      50%{ transform:translate(18px,-12px) scale(1.04); }
+    }
+
+    .floaters{ position:absolute; inset:0; pointer-events:none; }
+    .sq{
+      position:absolute; width:90px;height:90px;border-radius:18px;
+      background:linear-gradient(135deg,rgba(255,255,255,.35),rgba(255,255,255,.10));
+      border:1px solid rgba(255,255,255,.40);
+      box-shadow:0 12px 30px rgba(20, 30, 60, .08);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      opacity:.85;
+      animation:floatY 10s ease-in-out infinite;
+    }
+    .sq::after{
+      content:""; position:absolute; inset:0; border-radius:inherit;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.45), transparent 55%);
+      opacity:.9;
+    }
+    .sq.s1{ left:8%; top:18%; width:72px; height:72px; animation-duration:11s; }
+    .sq.s2{ left:16%; bottom:14%; width:110px; height:110px; animation-duration:13s; animation-delay:-2s; }
+    .sq.s3{ right:10%; top:22%; width:86px; height:86px; animation-duration:12s; animation-delay:-4s; }
+    .sq.s4{ right:18%; bottom:18%; width:64px; height:64px; animation-duration:9s; animation-delay:-1s; }
+    .sq.s5{ left:48%; top:8%; width:58px; height:58px; animation-duration:10s; animation-delay:-3s; }
+
+    @keyframes floatY{
+      0%,100%{ transform:translateY(0) rotate(6deg); }
+      50%{ transform:translateY(-18px) rotate(-6deg); }
+    }
+
+    .card{
+      position: relative;
+      width: min(1100px, 94vw);
+      padding: 38px 42px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--glass), var(--glass2));
+      border: 1px solid var(--stroke);
+      box-shadow: 0 24px 70px rgba(20, 30, 60, .18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overflow: auto;
+      max-height: 88vh;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius: 30px;
+      background: linear-gradient(120deg, rgba(255,182,199,.35), rgba(166,184,255,.25), rgba(138,209,194,.25));
+      filter: blur(18px);
+      opacity: .35;
+      z-index: -1;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    h1{
+      margin: 0;
+      font-size: clamp(22px, 2.2vw, 30px);
+      letter-spacing: .02em;
+    }
+    .subtitle{
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .btn{
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.45);
+      background: rgba(255,255,255,.18);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 24px rgba(20,30,60,.10);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+      white-space: nowrap;
+    }
+    .btn:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.26);
+      box-shadow: 0 14px 34px rgba(20,30,60,.14);
+    }
+    .btn:active{ transform: translateY(0); }
+
+    .btn.primary{
+      border-color: rgba(138,209,194,.55);
+      background: linear-gradient(135deg, rgba(138,209,194,.35), rgba(255,255,255,.18));
+    }
+
+    form.filter-bar{
+      margin: 18px 0 18px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .select{
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.55);
+      background: rgba(255,255,255,.22);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 22px rgba(20,30,60,.08);
+      appearance: none;
+    }
+    .select:focus{
+      border-color: rgba(99,179,237,.55);
+      background: rgba(255,255,255,.30);
+    }
+
+    .user-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .user-card{
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.45);
+      box-shadow: 0 12px 26px rgba(20,30,60,.10);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-size: 14px;
+    }
+
+    .user-card p{ margin: 6px 0; }
+    .user-card strong{ font-weight: 800; }
+
+    .goals{
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(30,42,50,.72);
+      line-height: 1.4;
+    }
+
+    .empty{
+      text-align:center;
+      margin-top: 18px;
+      color: rgba(30,42,50,.70);
+      font-weight: 700;
+    }
+
+    @media (max-width: 520px){
+      .card{ padding: 28px 18px; border-radius: 24px; }
+      .top-bar{ justify-content: center; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <div class="floaters" aria-hidden="true">
+    <div class="sq s1"></div>
+    <div class="sq s2"></div>
+    <div class="sq s3"></div>
+    <div class="sq s4"></div>
+    <div class="sq s5"></div>
+  </div>
+
+  {% set selected_split = request.form.get('split','') %}
+  {% set selected_location = request.form.get('location','') %}
+  {% set selected_age = request.form.get('age','') %}
+
+  <main class="card">
+    <div class="top-bar">
+      <div>
+        <h1>Seznam uporabnikov</h1>
+        <p class="subtitle">Filtriraj po splitu, lokaciji in starosti.</p>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="{{ url_for('dashboard') }}" class="btn">Profil</a>
+        <a href="{{ url_for('about') }}" class="btn">O avtorju</a>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('users') }}" class="filter-bar">
+      <select name="split" class="select">
+        <option value="">-- Split program --</option>
+        <option value="push_pull_legs" {% if selected_split=='push_pull_legs' %}selected{% endif %}>Push Pull Legs</option>
+        <option value="upper_lower" {% if selected_split=='upper_lower' %}selected{% endif %}>Upper / Lower</option>
+        <option value="full_body" {% if selected_split=='full_body' %}selected{% endif %}>Full Body</option>
+        <option value="bro_split" {% if selected_split=='bro_split' %}selected{% endif %}>Bro Split</option>
+      </select>
+
+      <select name="location" class="select">
+        <option value="">-- Lokacija --</option>
+        <option value="Ljubljana" {% if selected_location=='Ljubljana' %}selected{% endif %}>Ljubljana</option>
+        <option value="Maribor" {% if selected_location=='Maribor' %}selected{% endif %}>Maribor</option>
+        <option value="Celje" {% if selected_location=='Celje' %}selected{% endif %}>Celje</option>
+        <option value="Koper" {% if selected_location=='Koper' %}selected{% endif %}>Koper</option>
+        <option value="Kranj" {% if selected_location=='Kranj' %}selected{% endif %}>Kranj</option>
+        <option value="Nova Gorica" {% if selected_location=='Nova Gorica' %}selected{% endif %}>Nova Gorica</option>
+      </select>
+
+      <select name="age" class="select">
+        <option value="">-- Starost --</option>
+        <option value="14-18" {% if selected_age=='14-18' %}selected{% endif %}>14–18 let</option>
+        <option value="18-25" {% if selected_age=='18-25' %}selected{% endif %}>18–25 let</option>
+        <option value="25+" {% if selected_age=='25+' %}selected{% endif %}>25+ let</option>
+      </select>
+
+      <button type="submit" class="btn primary">Filtriraj</button>
+      <a href="{{ url_for('reservations') }}" class="btn">Rezervacija</a>
+    </form>
+
+    {% if users and users|length > 0 %}
+      <div class="user-grid">
+        {% for user in users %}
+          <div class="user-card">
+            <p><strong>{{ user.first_name }} {{ user.last_name }}</strong></p>
+            <p>Starost: {{ user.age }}</p>
+            <p>Split: {{ user.split }}</p>
+            <p>Fitnes: {{ user.gym_name }} ({{ user.location }})</p>
+            <p>Kontakt: {{ user.contact }}</p>
+
+            {% if user.goals %}
+              <p class="goals"><strong>Cilji:</strong> {{ user.goals }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">Ni rezultatov za izbrane filtre.</div>
+    {% endif %}
+  </main>
+</body>
+</html>

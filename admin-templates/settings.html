@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin – Nadzorna plošča</title>
+  <style>
+    :root{--ink:#1e2a32;--muted:rgba(30,42,50,.68);--glass:rgba(255,255,255,.30);--glass2:rgba(255,255,255,.18);--stroke:rgba(255,255,255,.45);--accent1:#4fd1c5;--accent2:#63b3ed;--accent3:#81e6d9;}
+    *{box-sizing:border-box;} html,body{height:100%;}
+    body{margin:0;display:grid;place-items:center;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
+      background:radial-gradient(900px 600px at 15% 15%, rgba(99,179,237,.55), transparent 60%),
+               radial-gradient(900px 600px at 85% 20%, rgba(79,209,197,.55), transparent 60%),
+               radial-gradient(900px 700px at 50% 85%, rgba(129,230,217,.55), transparent 65%),
+               linear-gradient(180deg, #f2f8ff, #eefbf8 55%, #e6f7ff);}
+    .card{position:relative;width:min(720px,92vw);padding:44px 48px;border-radius:28px;background:linear-gradient(180deg,var(--glass),var(--glass2));border:1px solid var(--stroke);box-shadow:0 24px 70px rgba(20,30,60,.18);backdrop-filter:blur(18px);text-align:center;}
+    .card::before{content:"";position:absolute;inset:-2px;border-radius:30px;background:linear-gradient(120deg,rgba(255,182,199,.35),rgba(166,184,255,.25),rgba(138,209,194,.25));filter:blur(18px);opacity:.35;z-index:-1;}
+    h1{margin:0 0 10px 0;font-size:34px;}
+    .subtitle{margin:0 0 18px 0;color:var(--muted);font-size:14px;line-height:1.55;}
+    .buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:12px;}
+    .btn{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.18);color:var(--ink);padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;box-shadow:0 10px 24px rgba(20,30,60,.10);backdrop-filter:blur(10px);}
+    .btn.primary{border-color:rgba(138,209,194,.55);background:linear-gradient(135deg, rgba(138,209,194,.35), rgba(255,255,255,.18));}
+    .btn:hover{background:rgba(255,255,255,.26);}
+    @media(max-width:520px){.card{padding:34px 22px;}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Admin nadzor</h1>
+    <p class="subtitle">Upravljanje uporabnikov, fitnesov in rezervacij.</p>
+
+    <div class="buttons">
+      <a class="btn primary" href="{{ url_for('admin_users') }}">Uporabniki</a>
+      <a class="btn" href="{{ url_for('admin_gyms') }}">Fitnes centri</a>
+      <a class="btn" href="{{ url_for('admin_reservations') }}">Rezervacije</a>
+      <a class="btn" href="{{ url_for('landing') }}">Začetna</a>
+      <a class="btn" href="{{ url_for('logout') }}">Odjava</a>
+    </div>
+  </main>
+</body>
+</html>

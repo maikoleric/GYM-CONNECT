@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin – Fitnes centri</title>
+
+  <style>
+    :root{
+      --ink:#1e2a32; --muted:rgba(30,42,50,.68);
+      --glass:rgba(255,255,255,.30); --glass2:rgba(255,255,255,.18); --stroke:rgba(255,255,255,.45);
+      --accent1:#4fd1c5; --accent2:#63b3ed; --accent3:#81e6d9;
+    }
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      background:
+        radial-gradient(900px 600px at 15% 15%, rgba(99,179,237,.55), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(79,209,197,.55), transparent 60%),
+        radial-gradient(900px 700px at 50% 85%, rgba(129,230,217,.55), transparent 65%),
+        linear-gradient(180deg, #f2f8ff, #eefbf8 55%, #e6f7ff);
+    }
+
+    .blob{position:absolute;filter:blur(40px);opacity:.55;pointer-events:none;}
+    .blob.b1{width:420px;height:420px;left:-120px;top:-120px;background:radial-gradient(circle at 30% 30%,var(--accent3),transparent 60%);}
+    .blob.b2{width:520px;height:520px;right:-180px;top:-140px;background:radial-gradient(circle at 40% 40%,var(--accent2),transparent 62%);}
+    .blob.b3{width:560px;height:560px;left:15%;bottom:-240px;background:radial-gradient(circle at 40% 40%,var(--accent1),transparent 62%);}
+
+    .card{
+      position:relative;
+      width:min(1100px,94vw);
+      padding:38px 42px;
+      border-radius:28px;
+      background:linear-gradient(180deg,var(--glass),var(--glass2));
+      border:1px solid var(--stroke);
+      box-shadow:0 24px 70px rgba(20,30,60,.18);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      overflow:auto;
+      max-height:88vh;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius:30px;
+      background:linear-gradient(120deg,rgba(255,182,199,.35),rgba(166,184,255,.25),rgba(138,209,194,.25));
+      filter:blur(18px);
+      opacity:.35;
+      z-index:-1;
+    }
+
+    .top-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    h1{margin:0;font-size:clamp(22px,2.2vw,30px);letter-spacing:.02em;}
+    .subtitle{margin:6px 0 0 0;color:var(--muted);font-size:14px;}
+
+    .btn{
+      padding:10px 16px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.45);
+      background:rgba(255,255,255,.18);
+      color:var(--ink);
+      font-size:13px;
+      font-weight:800;
+      text-decoration:none;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(20,30,60,.10);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+      transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,.26);
+      box-shadow:0 14px 34px rgba(20,30,60,.14);
+    }
+    .btn:active{transform:translateY(0);}
+    .btn.primary{
+      border-color: rgba(138,209,194,.55);
+      background: linear-gradient(135deg, rgba(138,209,194,.35), rgba(255,255,255,.18));
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:14px;
+      margin-top:10px;
+    }
+    .gym-card{
+      padding:16px 18px;
+      border-radius:18px;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.45);
+      box-shadow:0 12px 26px rgba(20,30,60,.10);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      font-size:14px;
+    }
+    .gym-card p{margin:6px 0;}
+    .gym-card strong{font-weight:900;}
+    .empty{
+      text-align:center;
+      margin-top:16px;
+      color:rgba(30,42,50,.70);
+      font-weight:800;
+    }
+
+    @media(max-width:520px){
+      .card{padding:28px 18px;border-radius:24px;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+  <main class="card">
+    <div class="top-bar">
+      <div>
+        <h1>Admin – Fitnes centri</h1>
+        <p class="subtitle">Seznam fitnesov in koliko uporabnikov jih uporablja.</p>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn primary" href="{{ url_for('admin_settings') }}">Admin panel</a>
+        <a class="btn" href="{{ url_for('admin_users') }}">Uporabniki</a>
+        <a class="btn" href="{{ url_for('dashboard') }}">Nazaj</a>
+        <a class="btn" href="{{ url_for('logout') }}">Odjava</a>
+      </div>
+    </div>
+
+    {% if gyms and gyms|length > 0 %}
+      <div class="grid">
+        {% for g in gyms %}
+          <div class="gym-card">
+            <p><strong>{{ g.gym_name }}</strong></p>
+            <p>Lokacija: {{ g.location }}</p>
+            <p>Št. uporabnikov: {{ g.count }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">Ni podatkov o fitnes centrih.</div>
+    {% endif %}
+  </main>
+</body>
+</html>

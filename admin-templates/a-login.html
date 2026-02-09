@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin prijava – GYM-CONNECT</title>
+
+  <style>
+    :root{
+      --ink:#1e2a32; --muted:rgba(30,42,50,.68);
+      --glass:rgba(255,255,255,.30); --glass2:rgba(255,255,255,.18); --stroke:rgba(255,255,255,.45);
+      --accent1:#4fd1c5; --accent2:#63b3ed; --accent3:#81e6d9;
+    }
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      margin:0; display:grid; place-items:center; overflow:hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 600px at 15% 15%, rgba(99,179,237,.55), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(79,209,197,.55), transparent 60%),
+        radial-gradient(900px 700px at 50% 85%, rgba(129,230,217,.55), transparent 65%),
+        linear-gradient(180deg, #f2f8ff, #eefbf8 55%, #e6f7ff);
+    }
+    .blob{position:absolute;filter:blur(40px);opacity:.55;pointer-events:none;}
+    .blob.b1{width:420px;height:420px;left:-120px;top:-120px;background:radial-gradient(circle at 30% 30%,var(--accent3),transparent 60%);}
+    .blob.b2{width:520px;height:520px;right:-180px;top:-140px;background:radial-gradient(circle at 40% 40%,var(--accent2),transparent 62%);}
+    .blob.b3{width:560px;height:560px;left:15%;bottom:-240px;background:radial-gradient(circle at 40% 40%,var(--accent1),transparent 62%);}
+
+    .card{
+      position:relative;
+      width:min(520px,92vw);
+      padding:44px 48px;
+      border-radius:28px;
+      background:linear-gradient(180deg,var(--glass),var(--glass2));
+      border:1px solid var(--stroke);
+      box-shadow:0 24px 70px rgba(20,30,60,.18);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      text-align:center;
+    }
+    .card::before{
+      content:"";position:absolute;inset:-2px;border-radius:30px;
+      background:linear-gradient(120deg,rgba(255,182,199,.35),rgba(166,184,255,.25),rgba(138,209,194,.25));
+      filter:blur(18px);opacity:.35;z-index:-1;
+    }
+    h1{margin:0 0 10px 0; font-size:32px;}
+    .subtitle{margin:0 0 18px 0; color:var(--muted); font-size:14px; line-height:1.55;}
+
+    input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.55);
+      background:rgba(255,255,255,.22);
+      font-size:14px;
+      outline:none;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      box-shadow:0 10px 22px rgba(20,30,60,.08);
+    }
+    input:focus{border-color:rgba(99,179,237,.55); background:rgba(255,255,255,.30);}
+    .buttons{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px;}
+    .btn{
+      border:1px solid rgba(255,255,255,.45);
+      background:rgba(255,255,255,.18);
+      color:var(--ink);
+      padding:12px 18px;
+      border-radius:999px;
+      font-weight:700;
+      text-decoration:none;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(20,30,60,.10);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+    .btn.primary{
+      border-color: rgba(138,209,194,.55);
+      background: linear-gradient(135deg, rgba(138,209,194,.35), rgba(255,255,255,.18));
+    }
+    .btn:hover{background:rgba(255,255,255,.26);}
+    .error{
+      margin-top:14px;
+      font-size:13px;
+      color:#c53030;
+      background:rgba(255,255,255,.35);
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.45);
+    }
+    @media (max-width:520px){ .card{padding:34px 22px;} }
+  </style>
+</head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+  <main class="card">
+    <h1>Admin</h1>
+    <p class="subtitle">Prijavi se kot administrator. (Uporabi admin ime+priimek+geslo na navadni prijavi.)</p>
+
+    <form method="POST" action="{{ url_for('login') }}" autocomplete="off">
+      <input type="text" name="first_name" placeholder="Ime" required>
+      <div style="height:10px;"></div>
+      <input type="text" name="last_name" placeholder="Priimek" required>
+      <div style="height:10px;"></div>
+      <input type="password" name="password" placeholder="Geslo" required>
+
+      <div class="buttons">
+        <button class="btn primary" type="submit">Prijava</button>
+        <a class="btn" href="{{ url_for('landing') }}">Nazaj</a>
+      </div>
+    </form>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+  </main>
+</body>
+</html>

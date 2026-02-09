@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registracija – GYM-CONNECT</title>
+
+  <style>
+    :root{
+      --bg1: #f2f8ff;
+      --bg2: #eefbf8;
+      --bg3: #e9f6ff;
+      --ink: #1e2a32;
+      --muted: rgba(30,42,50,.68);
+      --glass: rgba(255,255,255,.30);
+      --glass2: rgba(255,255,255,.18);
+      --stroke: rgba(255,255,255,.45);
+      --accent1: #4fd1c5;
+      --accent2: #63b3ed;
+      --accent3: #81e6d9;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+
+      background:
+        radial-gradient(900px 600px at 15% 15%, rgba(99,179,237,.55), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(79,209,197,.55), transparent 60%),
+        radial-gradient(900px 700px at 50% 85%, rgba(129,230,217,.55), transparent 65%),
+        linear-gradient(180deg, #f2f8ff, #eefbf8 55%, #e6f7ff);
+    }
+
+    .blob{
+      position:absolute;
+      filter: blur(40px);
+      opacity: .55;
+      pointer-events: none;
+      transform: translateZ(0);
+    }
+    .blob.b1{
+      width: 420px; height: 420px;
+      left: -120px; top: -120px;
+      background: radial-gradient(circle at 30% 30%, var(--accent3), transparent 60%);
+      animation: drift 14s ease-in-out infinite;
+    }
+    .blob.b2{
+      width: 520px; height: 520px;
+      right: -180px; top: -140px;
+      background: radial-gradient(circle at 40% 40%, var(--accent2), transparent 62%);
+      animation: drift 18s ease-in-out infinite reverse;
+    }
+    .blob.b3{
+      width: 560px; height: 560px;
+      left: 15%; bottom: -240px;
+      background: radial-gradient(circle at 40% 40%, var(--accent1), transparent 62%);
+      animation: drift 20s ease-in-out infinite;
+    }
+
+    @keyframes drift{
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(18px,-12px) scale(1.04); }
+    }
+
+    .floaters{ position:absolute; inset:0; pointer-events:none; }
+    .sq{
+      position:absolute;
+      width: 90px; height: 90px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.35), rgba(255,255,255,.10));
+      border: 1px solid rgba(255,255,255,.40);
+      box-shadow: 0 12px 30px rgba(20, 30, 60, .08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: .85;
+      transform: translateZ(0);
+      animation: floatY 10s ease-in-out infinite;
+    }
+    .sq::after{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.45), transparent 55%);
+      opacity: .9;
+    }
+
+    .sq.s1{ left: 8%; top: 18%; width: 72px; height:72px; animation-duration: 11s; background: linear-gradient(135deg, rgba(255,182,199,.30), rgba(255,255,255,.08)); }
+    .sq.s2{ left: 16%; bottom: 14%; width: 110px; height:110px; animation-duration: 13s; animation-delay: -2s; background: linear-gradient(135deg, rgba(138,209,194,.28), rgba(255,255,255,.08)); }
+    .sq.s3{ right: 10%; top: 22%; width: 86px; height:86px; animation-duration: 12s; animation-delay: -4s; background: linear-gradient(135deg, rgba(166,184,255,.30), rgba(255,255,255,.08)); }
+    .sq.s4{ right: 18%; bottom: 18%; width: 64px; height:64px; animation-duration: 9s;  animation-delay: -1s; background: linear-gradient(135deg, rgba(255,255,255,.30), rgba(255,182,199,.10)); }
+    .sq.s5{ left: 48%; top: 8%; width: 58px; height:58px; animation-duration: 10s; animation-delay: -3s; background: linear-gradient(135deg, rgba(255,255,255,.25), rgba(166,184,255,.10)); }
+
+    @keyframes floatY{
+      0%,100% { transform: translateY(0) rotate(6deg); }
+      50%     { transform: translateY(-18px) rotate(-6deg); }
+    }
+
+    .card{
+      position: relative;
+      width: min(820px, 92vw);
+      padding: 44px 48px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--glass), var(--glass2));
+      border: 1px solid var(--stroke);
+      box-shadow:
+        0 24px 70px rgba(20, 30, 60, .18),
+        inset 0 1px 0 rgba(255,255,255,.35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      text-align: center;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius: 30px;
+      background: linear-gradient(120deg, rgba(255,182,199,.35), rgba(166,184,255,.25), rgba(138,209,194,.25));
+      filter: blur(18px);
+      opacity: .35;
+      z-index: -1;
+    }
+
+    .logo{
+      font-size: clamp(26px, 3.2vw, 40px);
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      letter-spacing: .02em;
+    }
+
+    .subtitle{
+      max-width: 720px;
+      margin: 0 auto 18px auto;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    form{
+      width: min(620px, 100%);
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label{
+      display:block;
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(30,42,50,.75);
+    }
+
+    input, select{
+      width: 100%;
+      border-radius: 14px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.55);
+      background: rgba(255,255,255,.22);
+      color: var(--ink);
+      outline: none;
+      margin-top: 6px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 22px rgba(20,30,60,.08);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    select{
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, rgba(30,42,50,.65) 50%),
+        linear-gradient(135deg, rgba(30,42,50,.65) 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) calc(50% - 2px),
+        calc(100% - 12px) calc(50% - 2px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 34px;
+    }
+
+    input:focus, select:focus{
+      border-color: rgba(99,179,237,.55);
+      background: rgba(255,255,255,.30);
+    }
+
+    .buttons{
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn{
+      appearance: none;
+      border: 1px solid rgba(255,255,255,.45);
+      background: rgba(255,255,255,.18);
+      color: var(--ink);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 24px rgba(20,30,60,.10);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary{
+      border-color: rgba(138,209,194,.55);
+      background: linear-gradient(135deg, rgba(138,209,194,.35), rgba(255,255,255,.18));
+    }
+
+    .btn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(20,30,60,.14);
+      background: rgba(255,255,255,.26);
+    }
+
+    .btn:active{ transform: translateY(0px); }
+
+    .links{
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .link{
+      display:block;
+      text-align:center;
+      color: rgba(30,42,50,.70);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.40);
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .link:hover{
+      background: rgba(255,255,255,.22);
+      color: rgba(30,42,50,.85);
+    }
+
+    @media (max-width: 720px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px){
+      .card{ padding: 34px 22px; border-radius: 24px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <div class="floaters" aria-hidden="true">
+    <div class="sq s1"></div>
+    <div class="sq s2"></div>
+    <div class="sq s3"></div>
+    <div class="sq s4"></div>
+    <div class="sq s5"></div>
+  </div>
+
+  <main class="card">
+    <div class="logo">Registracija</div>
+    <div class="subtitle">Ustvari račun in začni uporabljati GYM-CONNECT.</div>
+
+    <form method="POST" action="{{ url_for('register') }}">
+      <div class="grid">
+        <div>
+          <label for="first_name">Ime</label>
+          <input id="first_name" type="text" name="first_name" required>
+        </div>
+
+        <div>
+          <label for="last_name">Priimek</label>
+          <input id="last_name" type="text" name="last_name" required>
+        </div>
+
+        <div>
+          <label for="age">Starost</label>
+          <input id="age" type="number" name="age" required>
+        </div>
+
+        <div>
+          <label for="contact">Kontakt</label>
+          <input id="contact" type="text" name="contact" required>
+        </div>
+
+        <div>
+          <label for="experience">Koliko let hodiš v fitnes</label>
+          <select id="experience" name="experience" required>
+            <option value="1_year">Manj kot 1 leto</option>
+            <option value="2_years">2 leti</option>
+            <option value="3_years">3+ let</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="split">Workout split</label>
+          <select id="split" name="split" required>
+            <option value="push_pull_legs">Push/Pull/Legs</option>
+            <option value="full_body">Full Body</option>
+            <option value="upper_lower">Upper/Lower</option>
+            <option value="bro_split">Bro Split</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="gym_name">Ime fitnesa</label>
+          <input id="gym_name" type="text" name="gym_name" required>
+        </div>
+
+        <div>
+          <label for="location">Lokacija</label>
+          <input id="location" type="text" name="location" required>
+        </div>
+
+        <div style="grid-column: 1 / -1;">
+          <label for="password">Geslo</label>
+          <input id="password" type="password" name="password" required>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn primary" type="submit">Registriraj se</button>
+        <a class="btn" href="{{ url_for('login') }}">Prijava</a>
+      </div>
+
+      <div class="links">
+        <a class="link" href="{{ url_for('landing') }}">Nazaj na začetno stran</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>
