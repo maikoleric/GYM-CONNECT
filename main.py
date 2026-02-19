@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from tinydb import TinyDB, Query
 import requests
 from jinja2 import ChoiceLoader, FileSystemLoader
+import os
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hulkulkal"
@@ -277,4 +278,4 @@ def page_not_found(e):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
