@@ -147,6 +147,8 @@ def users():
         return redirect(url_for("login"))
 
     all_users = db_users.all()
+    for u in all_users:
+        u["id"] = u.doc_id
     filtered = all_users
 
     if request.method == "POST":
