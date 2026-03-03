@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8">
+  <title>404 – Stran ne obstaja</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      display:grid;
+      place-items:center;
+      height:100vh;
+      background:linear-gradient(180deg,#f2f8ff,#e6f7ff);
+      text-align:center;
+    }
+    h1{font-size:80px;margin:0;}
+    p{font-size:18px;margin:10px 0;}
+    a{
+      display:inline-block;
+      margin-top:20px;
+      padding:10px 18px;
+      border-radius:999px;
+      text-decoration:none;
+      background:#63b3ed;
+      color:white;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>404</h1>
+    <p>Ups...Ta stran ne obstaja.</p>
+    <a href="{{ url_for('landing') }}">Nazaj na začetno stran</a>
+  </div>
+</body>
+</html>

@@ -2,14 +2,13 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from tinydb import TinyDB, Query
 import requests
 from jinja2 import ChoiceLoader, FileSystemLoader
-import os
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hulkulkal"
 
 app.jinja_loader = ChoiceLoader([
     FileSystemLoader("templates"),
-    FileSystemLoader(".")
+    FileSystemLoader("admin-templates")
 ])
 
 db_users = TinyDB("users.json")
@@ -70,9 +69,22 @@ def register():
         return redirect(url_for("dashboard"))
     return render_template("register.html")
 
-@app.route("/admin/login")
+
+@app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
-    return render_template("admin-templates/a-login.html")
+    if request.method == "POST":
+        first = request.form.get("first_name", "")
+        last = request.form.get("last_name", "")
+        password = request.form.get("password", "")
+
+        if first == ADMIN_FIRST_NAME and last == ADMIN_LAST_NAME and password == ADMIN_PASSWORD:
+            session.clear()
+            session["is_admin"] = True
+            return redirect(url_for("admin_dashboard"))
+
+        return render_template("a-login.html", error="Napačni podatki.")
+
+    return render_template("a-login.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -85,7 +97,7 @@ def login():
         if first == ADMIN_FIRST_NAME and last == ADMIN_LAST_NAME and password == ADMIN_PASSWORD:
             session.clear()
             session["is_admin"] = True
-            return redirect(url_for("admin_settings"))
+            return redirect(url_for("admin_dashboard"))
 
         users = db_users.search(
             (User.first_name == first) &
@@ -112,11 +124,18 @@ def logout():
 @app.route("/dashboard")
 def dashboard():
     if require_admin():
-        return redirect(url_for("admin_settings"))
+        return redirect(url_for("admin_dashboard"))
     user = get_current_user()
     if not user:
         return redirect(url_for("login"))
     return render_template("dashboard.html", user=user)
+
+
+@app.route("/admin")
+def admin_dashboard():
+    if not require_admin():
+        return redirect(url_for("admin_login"))
+    return render_template("a-dashboard.html")
 
 
 @app.route("/users", methods=["GET", "POST"])
@@ -157,16 +176,13 @@ def users():
 @app.route("/goals", methods=["GET", "POST"])
 def goals():
     if require_admin():
-        return redirect(url_for("admin_settings"))
+        return redirect(url_for("admin_dashboard"))
     user = get_current_user()
     if not user:
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        db_users.update(
-            {"goals": request.form.get("goals", "")},
-            doc_ids=[user.doc_id]
-        )
+        db_users.update({"goals": request.form.get("goals", "")}, doc_ids=[user.doc_id])
         return redirect(url_for("dashboard"))
     return render_template("goals.html", user=user)
 
@@ -195,65 +211,43 @@ def reservations():
     return render_template("reservations.html", user=user, reservations=res)
 
 
-@app.route("/settings")
+@app.route("/settings", methods=["GET", "POST"])
 def settings():
     if require_admin():
-        return redirect(url_for("admin_settings"))
-    user = get_current_user()
-    if not user:
-        return redirect(url_for("login"))
-    return render_template("settings.html", user=user)
-
-
-@app.route("/edit", methods=["GET", "POST"])
-def edit_profile():
-    if require_admin():
-        return redirect(url_for("admin_settings"))
+        return redirect(url_for("admin_dashboard"))
     user = get_current_user()
     if not user:
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        updated = dict(user)
-        updated.update({
-            "first_name": request.form["first_name"],
-            "last_name": request.form["last_name"],
-            "age": int(request.form["age"]),
-            "experience": request.form["experience"],
-            "split": request.form["split"],
-            "gym_name": request.form["gym_name"],
-            "location": request.form["location"],
-            "password": request.form["password"],
-            "contact": request.form["contact"]
-        })
-        db_users.update(updated, doc_ids=[user.doc_id])
+        db_users.update({
+            "contact": request.form.get("contact", ""),
+            "gym_name": request.form.get("gym_name", ""),
+            "location": request.form.get("location", "")
+        }, doc_ids=[user.doc_id])
         return redirect(url_for("dashboard"))
-    return render_template("edit.html", user=user)
+
+    return render_template("settings.html", user=user)
 
 
-@app.route("/o-avtorju")
-def about():
-    return render_template("o-avtorju.html")
-
-
-@app.route("/admin/settings")
+@app.route("/admin/settings", methods=["GET"])
 def admin_settings():
     if not require_admin():
-        return redirect(url_for("login"))
-    return render_template("admin-templates/settings.html")
+        return redirect(url_for("admin_login"))
+    return render_template("a-settings.html")
 
 
 @app.route("/admin/users")
 def admin_users():
     if not require_admin():
-        return redirect(url_for("login"))
-    return render_template("admin-templates/a-users.html", users=db_users.all())
+        return redirect(url_for("admin_login"))
+    return render_template("a-users.html", users=db_users.all())
 
 
 @app.route("/admin/gyms")
 def admin_gyms():
     if not require_admin():
-        return redirect(url_for("login"))
+        return redirect(url_for("admin_login"))
 
     gyms_map = {}
     for u in db_users.all():
@@ -262,14 +256,14 @@ def admin_gyms():
             gyms_map.setdefault(key, {"gym_name": key[0], "location": key[1], "count": 0})
             gyms_map[key]["count"] += 1
 
-    return render_template("admin-templates/gyms.html", gyms=list(gyms_map.values()))
+    return render_template("gyms.html", gyms=list(gyms_map.values()))
 
 
 @app.route("/admin/reservations")
 def admin_reservations():
     if not require_admin():
-        return redirect(url_for("login"))
-    return render_template("admin-templates/a-reservations.html", reservations=db_reservations.all())
+        return redirect(url_for("admin_login"))
+    return render_template("a-reservations.html", reservations=db_reservations.all())
 
 
 @app.errorhandler(404)
@@ -279,4 +273,3 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
-
