@@ -251,7 +251,7 @@
       </div>
     </div>
 
-    <form method="POST" action="{{ url_for('users') }}" class="filter-bar">
+    <form method="POST" action="{{ url_for('users.id') }}" class="filter-bar">
       <select name="split" class="select">
         <option value="">-- Split program --</option>
         <option value="push_pull_legs" {% if selected_split=='push_pull_legs' %}selected{% endif %}>Push Pull Legs</option>
