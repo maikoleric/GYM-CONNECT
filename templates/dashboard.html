@@ -215,10 +215,48 @@
     @media (max-width: 520px){
       .card{ padding: 34px 22px; border-radius: 24px; }
     }
+    .gym-bg{
+    position: fixed;
+    width: 160px;
+    opacity: 0.10;
+    filter: blur(1.5px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bg1{
+    top: 70px;
+    left: 80px;
+}
+
+.bg2{
+    top: 110px;
+    right: 90px;
+}
+
+.bg3{
+    bottom: 90px;
+    left: 130px;
+}
+
+.bg4{
+    bottom: 80px;
+    right: 140px;
+}
+
+.bg5{
+    top: 45%;
+    left: 40px;
+}
   </style>
 </head>
 
 <body>
+  <img src="{{ url_for('static', filename='dumbel.png') }}" class="gym-bg bg1">
+  <img src="{{ url_for('static', filename='equipment.png') }}" class="gym-bg bg2">
+  <img src="{{ url_for('static', filename='ketbel.png') }}" class="gym-bg bg3">
+  <img src="{{ url_for('static', filename='treadmil.png') }}" class="gym-bg bg4">
+  <img src="{{ url_for('static', filename='treniraj.png') }}" class="gym-bg bg5">
   <div class="blob b1"></div>
   <div class="blob b2"></div>
   <div class="blob b3"></div>
